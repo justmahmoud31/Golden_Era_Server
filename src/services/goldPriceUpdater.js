@@ -26,3 +26,5 @@ export const startGoldPriceUpdater = () => {
     }
   }, 90 * 1000); // every 90 seconds
 };
+
+// TODO use bulk insert instead of looping 

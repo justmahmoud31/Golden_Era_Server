@@ -5,11 +5,12 @@ import { updateProduct } from "./Controllers/updateProduct.controller.js";
 import { deleteProduct } from "./Controllers/deleteProduct.controller.js";
 import { protect, adminOnly } from "../../middlewares/authMiddleware.js";
 import upload from "../../middlewares/multer.js";
+import { getProductPrice } from "./Controllers/getProductPrice.controller.js";
 
 const router = express.Router();
 
 router.get("/", getProducts);
-
+router.get("/productByPrice/:id",getProductPrice);
 router.post(
   "/",
   protect,
