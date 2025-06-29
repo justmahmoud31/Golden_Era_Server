@@ -16,7 +16,7 @@ router.post(
   protect,
   adminOnly,
   upload.fields([
-    { name: "cover_images", maxCount: 1 },
+    { name: "cover_images", maxCount: 5 },
     { name: "images", maxCount: 5 },
   ]),
   createProduct

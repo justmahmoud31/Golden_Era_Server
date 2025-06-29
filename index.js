@@ -10,6 +10,8 @@ import { bootstrap } from "./src/bootstrap.js";
 import { startGoldPriceUpdater } from "./src/services/goldPriceUpdater.js";
 import paymentRoutes from "./src/modules/payment/routes/payment.routes.js";
 import stripeWebhook from "./src/modules/payment/webhook/webhook.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 
 const app = express();
@@ -18,12 +20,29 @@ app.use("/webhook", stripeWebhook);
 // Ensure uploads folder exists
 if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
 
-app.use(cors());
+app.use(cors({
+  origin: [process.env.FRONTEND_URL], // use env var
+  credentials: true,
+}));
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static("uploads"));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Then:
+const uploadDir = path.join(__dirname, "./uploads");
+
+app.use(
+  "/uploads",
+  express.static(uploadDir, {
+    setHeaders: (res, path) => {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    },
+  })
+);
 app.use("/api/payment", paymentRoutes);
 // Load routes
 bootstrap(app);
