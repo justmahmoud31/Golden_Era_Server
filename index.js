@@ -21,7 +21,7 @@ app.use("/webhook", stripeWebhook);
 if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
 
 app.use(cors({
-  origin: [process.env.FRONTEND_URL], // use env var
+  origin: [process.env.FRONTEND_URL,"http://localhost:3000"], // use env var
   credentials: true,
 }));
 app.use(helmet());
