@@ -16,7 +16,9 @@ export const loginUser = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
-
+    if(user.isDeleted){
+      return res.status(401).json({ message: "User account is deleted." });
+    }
     // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
