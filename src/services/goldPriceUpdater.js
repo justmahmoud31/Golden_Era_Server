@@ -12,19 +12,30 @@ export const startGoldPriceUpdater = () => {
 
       const goldProducts = await Product.find({ type: "Gold" });
 
+      const bulkOps = [];
+
       for (const product of goldProducts) {
         if (!product.karat || !product.size) continue;
 
         const karatRatio = product.karat / 24;
-        product.price = +(pricePerGram * karatRatio * product.size).toFixed(2);
-        await product.save();
+        const basePrice = pricePerGram * karatRatio * product.size;
+        const finalPrice = +(basePrice * 1.10).toFixed(2); // add 10%
+
+        bulkOps.push({
+          updateOne: {
+            filter: { _id: product._id },
+            update: { $set: { price: finalPrice } },
+          },
+        });
       }
 
-      console.log(`[CRON] Updated ${goldProducts.length} gold products at ${new Date().toLocaleTimeString()}`);
+      if (bulkOps.length > 0) {
+        await Product.bulkWrite(bulkOps);
+      }
+
+      console.log(`[CRON] Updated ${bulkOps.length} gold products at ${new Date().toLocaleTimeString()}`);
     } catch (err) {
       console.error("CRON gold price update failed:", err.response?.data || err.message);
     }
   }, 90 * 1000); // every 90 seconds
 };
-
-// TODO use bulk insert instead of looping 
