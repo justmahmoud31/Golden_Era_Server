@@ -1,8 +1,17 @@
 import Product from "../../../models/product.js";
+import Category from "../../../models/Category.js";
 
 export const getProducts = async (req, res) => {
   try {
-    const { name, id, category, subCategory, page = 1, limit = 10 } = req.query;
+    const {
+      name,
+      id,
+      category,
+      subCategory,
+      categoryName,
+      page = 1,
+      limit = 10,
+    } = req.query;
 
     const query = {};
 
@@ -10,6 +19,19 @@ export const getProducts = async (req, res) => {
     if (name) query.name = { $regex: name, $options: "i" };
     if (category) query.category = category;
     if (subCategory) query.subCategory = subCategory;
+
+    // 🆕 Filter by category name
+    if (categoryName) {
+      const foundCategory = await Category.findOne({
+        name: { $regex: new RegExp(categoryName, "i") },
+      });
+
+      if (foundCategory) {
+        query.category = foundCategory._id;
+      } else {
+        return res.status(404).json({ message: "Category not found" });
+      }
+    }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
