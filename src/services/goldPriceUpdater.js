@@ -19,7 +19,7 @@ export const startGoldPriceUpdater = () => {
 
         const karatRatio = product.karat / 24;
         const basePrice = pricePerGram * karatRatio * product.size;
-        const finalPrice = +(basePrice * 1.10).toFixed(2); // add 10%
+        const finalPrice = +(basePrice * 1.40).toFixed(2); 
 
         bulkOps.push({
           updateOne: {
