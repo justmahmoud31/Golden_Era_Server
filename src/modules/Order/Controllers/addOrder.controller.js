@@ -16,9 +16,7 @@ export const placeOrder = async (req, res) => {
     }
 
     const selectedAddress = user.addresses[addressIndex];
-    if (!selectedAddress || !address) {
-      return res.status(400).json({ message: "Invalid address selected" });
-    }
+ 
 
     const orderItems = cart.items.map((item) => ({
       product: item.product._id,
