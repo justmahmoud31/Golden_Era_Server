@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -63,8 +62,8 @@ const productSchema = new mongoose.Schema(
       type: Number,
       size: {
         type: Number,
-        required: true
-      }
+        required: true,
+      },
     }
   },
   {

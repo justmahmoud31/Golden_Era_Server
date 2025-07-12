@@ -6,7 +6,7 @@ import User from "../../../models/user.js";
 export const placeOrder = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { addressIndex } = req.body;
+    const { addressIndex, userName, language, address } = req.body;
 
     const user = await User.findById(userId);
     const cart = await Cart.findOne({ user: userId }).populate("items.product");
@@ -16,7 +16,7 @@ export const placeOrder = async (req, res) => {
     }
 
     const selectedAddress = user.addresses[addressIndex];
-    if (!selectedAddress) {
+    if (!selectedAddress || !address) {
       return res.status(400).json({ message: "Invalid address selected" });
     }
 
@@ -38,11 +38,12 @@ export const placeOrder = async (req, res) => {
       items: orderItems,
       shippingAddress: selectedAddress,
       totalPrice,
+      address,
+      userName,
+      language
     });
 
     await newOrder.save();
-
-    // Optional: Decrease stock
     for (const item of cart.items) {
       const product = await Product.findById(item.product._id);
       if (product) {
@@ -50,8 +51,6 @@ export const placeOrder = async (req, res) => {
         await product.save();
       }
     }
-
-    // Clear cart
     cart.items = [];
     await cart.save();
 

@@ -47,7 +47,18 @@ const orderSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
+    language: {
+      type: String,
+      required: false,
+    },
+    userName: {
+      type: String,
+      required: false,
+    },
+    address: {
+      type: String,
+      required: false,
+    },
     paidAt: Date,
   },
   {
