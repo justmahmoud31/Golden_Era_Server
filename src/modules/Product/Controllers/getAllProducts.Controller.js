@@ -1,5 +1,6 @@
 import Product from "../../../models/product.js";
 import Category from "../../../models/Category.js";
+import SubCategory from '../../../models/SubCategory.js';
 
 export const getProducts = async (req, res) => {
   try {
@@ -34,7 +35,7 @@ export const getProducts = async (req, res) => {
       }
     }
     if (subcategoryName) {
-      const foundSubCategory = await subCategory.findOne({
+      const foundSubCategory = await SubCategory.findOne({
         name: { $regex: new RegExp(subcategoryName, "i") },
       });
       if (foundSubCategory) {
