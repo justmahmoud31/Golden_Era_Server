@@ -9,6 +9,7 @@ export const getProducts = async (req, res) => {
       category,
       subCategory,
       categoryName,
+      subcategoryName,
       page = 1,
       limit = 10,
     } = req.query;
@@ -32,7 +33,16 @@ export const getProducts = async (req, res) => {
         return res.status(404).json({ message: "Category not found" });
       }
     }
-
+    if (subcategoryName) {
+      const foundSubCategory = await subCategory.findOne({
+        name: { $regex: new RegExp(subcategoryName, "i") },
+      });
+      if (foundSubCategory) {
+        query.subCategory = foundSubCategory._id;
+      } else {
+        return res.status(404).json({ message: "Category not found" });
+      }
+    }
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
     const products = await Product.find(query)
