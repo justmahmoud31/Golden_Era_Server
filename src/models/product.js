@@ -25,7 +25,7 @@ const productSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["Silver", "Gold"],
+      enum: ["Silver", "Gold", "other"],
       required: true,
     },
     rate: {
@@ -33,6 +33,14 @@ const productSchema = new mongoose.Schema(
       min: 0,
       max: 5,
       default: 0,
+    },
+    hasName: {
+      type: Boolean,
+      required: true,
+    },
+    defaultPrice: {
+      type: Number,
+      required: false,
     },
     stock: {
       type: Number,
@@ -60,11 +68,8 @@ const productSchema = new mongoose.Schema(
     },
     size: {
       type: Number,
-      size: {
-        type: Number,
-        required: true,
-      },
-    }
+      required: false,
+    },
   },
   {
     timestamps: true,

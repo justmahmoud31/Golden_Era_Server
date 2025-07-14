@@ -14,6 +14,8 @@ export const createProduct = async (req, res) => {
       isFeatured,
       karat,
       size,
+      hasName,
+      defaultPrice
     } = req.body;
 
     let finalPrice = 0;
@@ -24,7 +26,7 @@ export const createProduct = async (req, res) => {
       }
 
       const response = await axios.get(`${process.env.GOLD_PRICE}/price/XAU`);
-      const goldPriceXAU = response.data.price; // USD per ounce
+      const goldPriceXAU = response.data.price; 
       const pricePerGram = goldPriceXAU / 31.1035;
       const karatRatio = karat / 24;
       finalPrice = +(pricePerGram * karatRatio * size).toFixed(2);
@@ -47,6 +49,8 @@ export const createProduct = async (req, res) => {
       isFeatured,
       cover_images,
       images,
+      hasName,
+      defaultPrice
     });
 
     res.status(201).json(product);

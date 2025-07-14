@@ -13,6 +13,14 @@ const cartItemSchema = new mongoose.Schema({
     min: 1,
     default: 1,
   },
+  language: {
+    type: String,
+    required: false,
+  },
+  userName: {
+    type: String,
+    required: false,
+  },
 });
 
 const cartSchema = new mongoose.Schema(

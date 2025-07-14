@@ -6,7 +6,7 @@ import User from "../../../models/user.js";
 export const placeOrder = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { addressIndex, userName, language, address } = req.body;
+    const { address } = req.body;
 
     const user = await User.findById(userId);
     const cart = await Cart.findOne({ user: userId }).populate("items.product");
@@ -15,16 +15,22 @@ export const placeOrder = async (req, res) => {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
-    const selectedAddress = user.addresses[addressIndex];
- 
+    const orderItems = cart.items.map((item) => {
+      const product = item.product;
+      let price = product.price;
 
-    const orderItems = cart.items.map((item) => ({
-      product: item.product._id,
-      name: item.product.name,
-      cover_image: item.product.cover_images[0],
-      price: item.product.price,
-      quantity: item.quantity,
-    }));
+      if (product.hasName && product.defaultPrice) {
+        price += product.defaultPrice;
+      }
+
+      return {
+        product: product._id,
+        name: product.name,
+        cover_image: product.cover_images[0],
+        price,
+        quantity: item.quantity,
+      };
+    });
 
     const totalPrice = orderItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
@@ -34,14 +40,13 @@ export const placeOrder = async (req, res) => {
     const newOrder = new Order({
       user: userId,
       items: orderItems,
-      shippingAddress: selectedAddress,
       totalPrice,
       address,
-      userName,
-      language
     });
 
     await newOrder.save();
+
+    // Update stock
     for (const item of cart.items) {
       const product = await Product.findById(item.product._id);
       if (product) {
@@ -49,6 +54,7 @@ export const placeOrder = async (req, res) => {
         await product.save();
       }
     }
+
     cart.items = [];
     await cart.save();
 

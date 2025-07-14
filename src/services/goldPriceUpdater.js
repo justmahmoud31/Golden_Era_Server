@@ -16,10 +16,12 @@ export const startGoldPriceUpdater = () => {
 
       for (const product of goldProducts) {
         if (!product.karat || !product.size) continue;
-
+        if (product.type !== "Gold") {
+          continue;
+        }
         const karatRatio = product.karat / 24;
         const basePrice = pricePerGram * karatRatio * product.size;
-        const finalPrice = +(basePrice * 1.40).toFixed(2); 
+        const finalPrice = +(basePrice * 1.4).toFixed(2);
 
         bulkOps.push({
           updateOne: {
@@ -33,9 +35,16 @@ export const startGoldPriceUpdater = () => {
         await Product.bulkWrite(bulkOps);
       }
 
-      console.log(`[CRON] Updated ${bulkOps.length} gold products at ${new Date().toLocaleTimeString()}`);
+      console.log(
+        `[CRON] Updated ${
+          bulkOps.length
+        } gold products at ${new Date().toLocaleTimeString()}`
+      );
     } catch (err) {
-      console.error("CRON gold price update failed:", err.response?.data || err.message);
+      console.error(
+        "CRON gold price update failed:",
+        err.response?.data || err.message
+      );
     }
   }, 90 * 1000); // every 90 seconds
 };
