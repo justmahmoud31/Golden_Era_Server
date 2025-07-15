@@ -7,7 +7,8 @@ import cartRouter from './modules/Cart/cart.routes.js';
 import wishlistRouter from './modules/Wishlist/wishlist.routes.js';
 import orderRouter from './modules/Order/order.routes.js'
 import systemRouter from './modules/System/system.routes.js';
-import checkoutRouter from './modules/checkout/checkout.routes.js'
+import checkoutRouter from './modules/checkout/checkout.routes.js';
+import reviewRouter from './modules/Review/review.routes.js';
 export const bootstrap = (app) => {
     app.use('/api/auth', authRouter);
     app.use('/api/user', userRouter);
@@ -19,4 +20,5 @@ export const bootstrap = (app) => {
     app.use('/api/order',orderRouter);
     app.use('/api/system', systemRouter);
     app.use('/api/checkout',checkoutRouter);
+    app.use('/api/review',reviewRouter);
 };
